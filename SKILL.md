@@ -35,15 +35,21 @@ Requires Python 3.10+ and a LinShare account on a 6.5+ server.
      yourself; leave them out, or suggest one and add it only if the user says so.
      A `--label` for `request-files` may be a short name taken from the user's own words
      ("October invoice"); without one the tool picks "Files for <your email>".
+   - `request-files` needs a `--message` (LinShare refuses a request without one). If the
+     user gave none, ask them for the text before the dry run; you may propose a wording,
+     but use it only once they accept it.
    - No expiry given (`"expirationDate": null`) means the server's default expiry, not "never".
    - Wait for an explicit yes. If the user changes anything (a recipient, the expiry, a file),
      run a new `--dry-run` and ask again. Never reuse an earlier yes.
    - In the real run, pass the dry-run's `expirationDate` as `--expires YYYY-MM-DD`
      (the exact date the user approved), never a relative value like `7d` again.
-4. **No confirmation is needed for read-only commands:** `whoami`, `shares list`,
+4. **Check the server, not your memory.** Before telling the user whether something was
+   shared, sent, revoked or closed, run the matching list command (`shares list`,
+   `requests list`, `documents list`). Notes from earlier conversations can be out of date.
+5. **No confirmation is needed for read-only commands:** `whoami`, `shares list`,
    `received list`, `received download`, `documents list`, `requests list`, `requests download`.
-5. **After sharing**, tell the user which files went to whom and until when.
-6. **On errors** relay `error.message` in plain words. Don't retry a refused share with
+6. **After sharing**, tell the user which files went to whom and until when.
+7. **On errors** relay `error.message` in plain words. Don't retry a refused share with
    different settings without asking. Exit 1 means the command itself was wrong (fix it,
    don't ask the user to log in). When a share fails the tool removes the uploaded files and
    says so; if `error.code` is `"timeout"` the outcome is unknown — follow the message
@@ -73,7 +79,7 @@ linshare --json share ./contract.pdf --to marc@acme.com --expires 2026-11-13 --m
 | `linshare received download ID [--out DIR]` | save a received file (never overwrites) | no |
 | `linshare documents list` | the user's documents | no |
 | `linshare documents delete ID...` | delete documents | **yes** |
-| `linshare request-files --from EMAIL... [--label L] [--expires ...] [--message M] [--dry-run]` | ask people to send files (one private request each) | **yes** |
+| `linshare request-files --from EMAIL... --message M [--label L] [--expires ...] [--dry-run]` | ask people to send files (one private request each) | **yes** |
 | `linshare requests list` | upload requests and files received | no |
 | `linshare requests download ID [--out DIR]` | download received files as a zip | no |
 | `linshare requests close ID...` | close requests | **yes** |
