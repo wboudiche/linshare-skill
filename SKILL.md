@@ -54,6 +54,10 @@ Requires Python 3.10+ and a LinShare account on a 6.5+ server.
    don't ask the user to log in). When a share fails the tool removes the uploaded files and
    says so; if `error.code` is `"timeout"` the outcome is unknown — follow the message
    (check `shares list` / `documents list`) before any retry.
+8. **Large files** are fine: above 2 MiB the tool sends them in chunks, like the web UI.
+   Uploading takes about 15 s per GB on a fast network, much more on a slow one. For a file
+   over a few hundred MB, give the `share` command a long timeout (or run it in the
+   background) so it is not cut off, and tell the user it may take a while.
 
 ## Typical flow
 
