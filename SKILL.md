@@ -31,6 +31,10 @@ Requires Python 3.10+ and a LinShare account on a 6.5+ server.
      as **outside your organisation** — the expiry date, subject, message,
      and whether a password-protected link is used.
    - For `revoke`, `delete`, `close`: list first, then show exactly which items will be affected.
+   - Use only the words the user gave for `--subject` and `--message`. Don't write one
+     yourself; leave them out, or suggest one and add it only if the user says so.
+     A `--label` for `request-files` may be a short name taken from the user's own words
+     ("October invoice"); without one the tool picks "Files for <your email>".
    - No expiry given (`"expirationDate": null`) means the server's default expiry, not "never".
    - Wait for an explicit yes. If the user changes anything (a recipient, the expiry, a file),
      run a new `--dry-run` and ask again. Never reuse an earlier yes.
