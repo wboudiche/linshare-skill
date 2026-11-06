@@ -31,21 +31,27 @@ Requires Python 3.10+ and a LinShare account on a 6.5+ server.
      as **outside your organisation** — the expiry date, subject, message,
      and whether a password-protected link is used.
    - For `revoke`, `delete`, `close`: list first, then show exactly which items will be affected.
+   - No expiry given (`"expirationDate": null`) means the server's default expiry, not "never".
    - Wait for an explicit yes. If the user changes anything (a recipient, the expiry, a file),
      run a new `--dry-run` and ask again. Never reuse an earlier yes.
+   - In the real run, pass the dry-run's `expirationDate` as `--expires YYYY-MM-DD`
+     (the exact date the user approved), never a relative value like `7d` again.
 4. **No confirmation is needed for read-only commands:** `whoami`, `shares list`,
    `received list`, `received download`, `documents list`, `requests list`, `requests download`.
 5. **After sharing**, tell the user which files went to whom and until when.
-6. **On errors** (exit 3 = server refused, 4 = server unreachable), relay `error.message`
-   in plain words. Don't retry a refused share with different settings without asking.
-   If a share fails, the tool has already removed the uploaded files.
+6. **On errors** relay `error.message` in plain words. Don't retry a refused share with
+   different settings without asking. Exit 1 means the command itself was wrong (fix it,
+   don't ask the user to log in). When a share fails the tool removes the uploaded files and
+   says so; if `error.code` is `"timeout"` the outcome is unknown — follow the message
+   (check `shares list` / `documents list`) before any retry.
 
 ## Typical flow
 
 ```bash
 linshare --json share ./contract.pdf --to marc@acme.com --expires 7d --message "Please sign" --dry-run
 # → show the summary to the user, wait for "yes"
-linshare --json share ./contract.pdf --to marc@acme.com --expires 7d --message "Please sign"
+# dry-run said "expirationDate": "2026-11-13"
+linshare --json share ./contract.pdf --to marc@acme.com --expires 2026-11-13 --message "Please sign"
 ```
 
 ## Commands
@@ -73,4 +79,4 @@ linshare --json share ./contract.pdf --to marc@acme.com --expires 7d --message "
 
 ## Exit codes
 
-0 ok · 1 bad input · 2 not logged in / login problem · 3 server refused · 4 server unreachable or failing.
+0 ok · 1 bad input or wrong command · 2 not logged in / login problem · 3 server refused · 4 server unreachable, failing or too slow (`"code": "timeout"`).
