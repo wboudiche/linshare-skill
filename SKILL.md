@@ -29,7 +29,9 @@ Requires Python 3.10+ and a LinShare account on a 6.5+ server.
      then show the user, in plain words:
      the files (name and size), every recipient — marking `"external": true` ones
      as **outside your organisation** — the expiry date, subject, message,
-     and whether a password-protected link is used.
+     whether a password-protected link is used, and `downloadAlert` / `copyToMe`
+     (what the server will really do: the administrator's settings can override the user's choice;
+     say so when `detail` says so).
    - For `revoke`, `delete`, `close`: list first, then show exactly which items will be affected.
    - Use only the words the user gave for `--subject` and `--message`. Don't write one
      yourself; leave them out, or suggest one and add it only if the user says so.
@@ -42,13 +44,18 @@ Requires Python 3.10+ and a LinShare account on a 6.5+ server.
    - Wait for an explicit yes. If the user changes anything (a recipient, the expiry, a file),
      run a new `--dry-run` and ask again. Never reuse an earlier yes.
    - In the real run, pass the dry-run's `expirationDate` as `--expires YYYY-MM-DD`
-     (the exact date the user approved), never a relative value like `7d` again.
+     (the exact date the user approved), never a relative value like `7d` again;
+     same for `--alert-if-not-downloaded` (the dry-run's `alertIfNotDownloaded`).
 4. **Check the server, not your memory.** Before telling the user whether something was
    shared, sent, revoked or closed, run the matching list command (`shares list`,
    `requests list`, `documents list`). Notes from earlier conversations can be out of date.
 5. **No confirmation is needed for read-only commands:** `whoami`, `shares list`,
    `received list`, `received download`, `documents list`, `requests list`, `requests download`.
 6. **After sharing**, tell the user which files went to whom and until when.
+   **Downloads:** LinShare emails the sender the first time each recipient downloads a share,
+   and `shares list` shows a `downloaded` count — use it to answer "has X downloaded it?".
+   To be warned when a file is *not* downloaded, use `--alert-if-not-downloaded`
+   (a date, a delay like `3d`, or `off`; without it the server's default applies).
 7. **On errors** relay `error.message` in plain words. Don't retry a refused share with
    different settings without asking. Exit 1 means the command itself was wrong (fix it,
    don't ask the user to log in). When a share fails the tool removes the uploaded files and
@@ -76,7 +83,7 @@ linshare --json share ./contract.pdf --to marc@acme.com --expires 2026-11-13 --m
 | `linshare login --token [--server URL]` | user pastes a token made in the LinShare web UI | user runs it |
 | `linshare logout` | forgets (and revokes) the token | no |
 | `linshare whoami` | server and account in use | no |
-| `linshare share FILE... --to EMAIL... [--expires 7d\|2w\|1m\|YYYY-MM-DD] [--subject S] [--message M] [--password-link] [--dry-run]` | upload and share by email | **yes** |
+| `linshare share FILE... --to EMAIL... [--expires 7d\|2w\|1m\|YYYY-MM-DD] [--subject S] [--message M] [--password-link] [--alert-if-not-downloaded WHEN] [--send-me-a-copy] [--dry-run]` | upload and share by email | **yes** |
 | `linshare shares list` | what the user shared | no |
 | `linshare shares revoke ID...` | cancel shares | **yes** |
 | `linshare received list` | what others shared with the user | no |
