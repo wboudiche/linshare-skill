@@ -63,7 +63,9 @@ def test_reuses_the_dry_run_exact_dates():
 def test_finds_the_commands_it_should():
     cmds = mentioned_commands()
     for words in [("share",), ("shares", "list"), ("shares", "revoke"), ("received", "download"),
-                  ("request-files",), ("requests", "close"), ("documents", "delete"), ("login",)]:
+                  ("request-files",), ("requests", "close"), ("documents", "delete"), ("login",),
+                  ("spaces", "list"), ("spaces", "files"), ("spaces", "upload"), ("spaces", "download"),
+                  ("spaces", "add-member"), ("spaces", "remove-member"), ("spaces", "delete")]:
         assert words in cmds, words
 
 

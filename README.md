@@ -62,6 +62,29 @@ confirms with you first.
 | "Download what Ann sent" | saves the received files as a zip |
 | "Close the request to Ann" | ✋ closes it; nobody can upload any more |
 
+### Team workgroups and workspaces
+
+| You say | What happens |
+|---|---|
+| "Which LinShare workgroups am I in?" | lists your workgroups and workspaces, with your role in each |
+| "What's in the Marketing workgroup?" / "…in its Contracts folder?" | lists folders and files (who changed them last, when) |
+| "Put these slides in the Marketing workgroup, in Contracts" | ✋ shows the files, the folder and everyone who will see them, then uploads (any size) |
+| "Get the latest budget from the Finance workgroup" | downloads it (never overwrites an existing file) |
+| "Create a workgroup *Project Atlas* with a folder *Specs*" | creates them; you are the only member until you add people |
+| "Add julie@acme.com to Project Atlas as a reader" | ✋ shows who, where and what the role allows, then adds her |
+| "Let Julie edit files in Project Atlas" | ✋ changes her role to writer |
+| "Who has access to Project Atlas?" | lists the members and their roles |
+| "Remove Paul from Project Atlas" | ✋ removes his access |
+| "Delete the old drafts from Project Atlas" | ✋ lists them, says they disappear for every member, then deletes |
+| "Delete the Project Atlas workgroup" | ✋ warns that all its files go, for everyone, then deletes |
+
+Roles: *reader* (read only), *contributor* (can add files), *writer* (can add and
+change), *admin* (also manages members). Workspaces group several workgroups; they
+have reader, writer and admin roles.
+
+On LinShare 7.0, a few of these fail because of server bugs (listing members,
+adding someone to a workspace); the assistant tells you when that happens.
+
 ### Account
 
 | You say | What happens |
@@ -106,5 +129,5 @@ The checks against the command are skipped if `linshare` is not installed.
 
 ## Compatibility
 
-Written for linshare-cli as of 2026-11-08 (`share --alert-if-not-downloaded`,
+Written for linshare-cli as of 2026-11-09 (`spaces` commands, `share --alert-if-not-downloaded`,
 `--send-me-a-copy`, `request-files --message`). Run the tests after updating either side.

@@ -1,6 +1,6 @@
 ---
 name: cli-anything-linshare
-description: Share documents through LinShare - send files to people by email (inside or outside the organisation), list or revoke what was shared, list and download files received, and ask people to send files. Use when the user asks to share, send, transfer or receive a file "via LinShare", or to check or cancel a LinShare share.
+description: Share documents through LinShare - send files to people by email (inside or outside the organisation), list or revoke what was shared, list and download files received, ask people to send files, and work with team workgroups and workspaces (browse, upload, download, manage members). Use when the user asks to share, send, transfer or receive a file "via LinShare", to check or cancel a LinShare share, or about a LinShare workgroup, workspace or shared space.
 ---
 
 # cli-anything-linshare
@@ -28,7 +28,9 @@ If `linshare` is not found, tell the user to install it; don't install it yourse
    (`! linshare login --token` if they sign in with SSO and have a token from the web UI).
    Never ask for or type their password.
 3. **Get an explicit "yes" before anything leaves the account or is destroyed.**
-   This covers `share`, `request-files`, `shares revoke`, `documents delete`, `requests close`.
+   This covers `share`, `request-files`, `shares revoke`, `documents delete`, `requests close`,
+   and for shared spaces `spaces upload`, `spaces add-member`, `spaces set-role`,
+   `spaces remove-member`, `spaces delete-files`, `spaces delete`.
    - For `share` and `request-files`: run the same command with `--dry-run` first,
      then show the user, in plain words:
      the files (name and size), every recipient — marking `"external": true` ones
@@ -37,6 +39,13 @@ If `linshare` is not found, tell the user to install it; don't install it yourse
      (what the server will really do: the administrator's settings can override the user's choice;
      say so when `detail` says so).
    - For `revoke`, `delete`, `close`: list first, then show exactly which items will be affected.
+   - For `spaces upload` and `spaces add-member`: run with `--dry-run` first. For an upload, show
+     the files, the workgroup (and folder) and `visibleTo` — everyone in it will see the files
+     (if `visibleTo` is null, say the members could not be listed). For a new member, show the
+     person (name and email), the space and the role, in plain words (READER: read only,
+     CONTRIBUTOR: can add, WRITER: can add and change, ADMIN: also manages members).
+   - `spaces delete` removes the space and all its files **for every member**; `spaces delete-files`
+     removes them for everyone too. Say so, naming the space and the items.
    - Use only the words the user gave for `--subject` and `--message`. Don't write one
      yourself; leave them out, or suggest one and add it only if the user says so.
      A `--label` for `request-files` may be a short name taken from the user's own words
@@ -52,20 +61,32 @@ If `linshare` is not found, tell the user to install it; don't install it yourse
      same for `--alert-if-not-downloaded` (the dry-run's `alertIfNotDownloaded`).
 4. **Check the server, not your memory.** Before telling the user whether something was
    shared, sent, revoked or closed, run the matching list command (`shares list`,
-   `requests list`, `documents list`). Notes from earlier conversations can be out of date.
+   `requests list`, `documents list`, `spaces files`, `spaces members`). Notes from earlier
+   conversations can be out of date.
 5. **No confirmation is needed for read-only commands:** `whoami`, `shares list`,
-   `received list`, `received download`, `documents list`, `requests list`, `requests download`.
+   `received list`, `received download`, `documents list`, `requests list`, `requests download`,
+   `spaces list`, `spaces files`, `spaces members`, `spaces download`. Creating an empty
+   workgroup or folder (`spaces create`, `spaces mkdir`) needs no confirmation either: nobody
+   else sees it until files or members are added.
 6. **After sharing**, tell the user which files went to whom and until when.
    **Downloads:** LinShare emails the sender the first time each recipient downloads a share,
    and `shares list` shows a `downloaded` count — use it to answer "has X downloaded it?".
    To be warned when a file is *not* downloaded, use `--alert-if-not-downloaded`
    (a date, a delay like `3d`, or `off`; without it the server's default applies).
-7. **On errors** relay `error.message` in plain words. Don't retry a refused share with
+7. **Shared spaces.** A *workgroup* holds files a team shares; a *workspace* groups workgroups.
+   Commands take ids: run `spaces list` to find the space, `spaces files SPACE [--folder ID]` to
+   find a folder or file. Several spaces can have the same name: if the user's words match more
+   than one, ask which. Sharing a file *by email* (`share`) and putting it in a workgroup
+   (`spaces upload`) are different: ask if unclear.
+   On LinShare 7.0 some things fail because of server bugs: `spaces members` cannot list members
+   (use the member id printed by `add-member` for `set-role` / `remove-member`), and people cannot
+   be added to a *workspace* (only to its workgroups). Relay the message; don't retry in other ways.
+8. **On errors** relay `error.message` in plain words. Don't retry a refused share with
    different settings without asking. Exit 1 means the command itself was wrong (fix it,
    don't ask the user to log in). When a share fails the tool removes the uploaded files and
    says so; if `error.code` is `"timeout"` the outcome is unknown — follow the message
    (check `shares list` / `documents list`) before any retry.
-8. **Large files** are fine: above 2 MiB the tool sends them in chunks, like the web UI.
+9. **Large files** are fine: above 2 MiB the tool sends them in chunks, like the web UI.
    Uploading takes about 15 s per GB on a fast network, much more on a slow one. For a file
    over a few hundred MB, give the `share` command a long timeout (or run it in the
    background) so it is not cut off, and tell the user it may take a while.
@@ -98,6 +119,18 @@ linshare --json share ./contract.pdf --to marc@acme.com --expires 2026-11-13 --m
 | `linshare requests list` | upload requests and files received | no |
 | `linshare requests download ID [--out DIR]` | download received files as a zip | no |
 | `linshare requests close ID...` | close requests | **yes** |
+| `linshare spaces list [--in WORKSPACE]` | workgroups and workspaces, with your role | no |
+| `linshare spaces create NAME [--workspace] [--in WORKSPACE]` | create a workgroup (or workspace) | no |
+| `linshare spaces delete ID...` | delete spaces and all their files, for everyone | **yes** |
+| `linshare spaces files SPACE [--folder ID]` | folders and files of a workgroup | no |
+| `linshare spaces mkdir SPACE NAME [--folder ID]` | create a folder | no |
+| `linshare spaces upload SPACE FILE... [--folder ID] [--dry-run]` | put files in a workgroup (members see them) | **yes** |
+| `linshare spaces download SPACE ID [--out DIR]` | save a workgroup file (never overwrites) | no |
+| `linshare spaces delete-files SPACE ID...` | delete files or folders, for everyone | **yes** |
+| `linshare spaces members SPACE` | members and roles | no |
+| `linshare spaces add-member SPACE EMAIL --role R [--dry-run]` | give someone access | **yes** |
+| `linshare spaces set-role SPACE MEMBER ROLE` | change a role (MEMBER: email or member id) | **yes** |
+| `linshare spaces remove-member SPACE MEMBER` | remove access | **yes** |
 
 `--to` and `--from` are repeated for several people: `--to a@x.org --to b@y.org`.
 "External" is a heuristic: a different email domain than the user's.
