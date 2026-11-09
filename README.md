@@ -11,17 +11,30 @@ must be installed first (Python 3.10+, LinShare 6.5 or later).
 
 ## Install
 
-```bash
-# 1. the command
-pip install "git+<linshare-cli repository URL>#subdirectory=agent-harness"
+**1. The skill, in Claude Code** — type in Claude:
 
-# 2. the skill, for Claude Code
-git clone https://github.com/wboudiche/linshare-skill.git ~/linshare-skill
-ln -s ~/linshare-skill ~/.claude/skills/cli-anything-linshare
+```
+/plugin install linshare --marketplace wboudiche/linshare-skill
 ```
 
-Then the user logs in once, themselves: `linshare login --server https://linshare.example.com`.
-The assistant never asks for or types the password.
+(older Claude Code: `/plugin marketplace add wboudiche/linshare-skill`, then `/plugin install linshare@linshare-skill`)
+
+**2. The `linshare` command** (Python 3.10+):
+
+```bash
+pip install "git+<linshare-cli repository URL>#subdirectory=agent-harness"
+```
+
+**3. Log in once**, by typing in Claude (your password goes to your terminal, never to the chat):
+
+```
+! linshare login --server https://linshare.example.com
+```
+
+You don't need to remember steps 2 and 3: on the first request, the assistant checks
+and tells you what is missing.
+
+Other agents that read `SKILL.md` skills: copy `skills/linshare/` into their skills folder.
 
 ## What you can ask
 

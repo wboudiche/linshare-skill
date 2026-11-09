@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-SKILL = Path(__file__).resolve().parents[1] / "SKILL.md"
+SKILL = Path(__file__).resolve().parents[1] / "skills" / "linshare" / "SKILL.md"
 TEXT = SKILL.read_text(encoding="utf-8")
 LINSHARE = shutil.which("linshare")
 needs_cli = pytest.mark.skipif(not LINSHARE, reason="`linshare` is not installed")
@@ -47,7 +47,7 @@ def mentioned_commands() -> dict[tuple[str, ...], set[str]]:
 
 
 def test_frontmatter():
-    assert TEXT.startswith("---\nname: cli-anything-linshare\ndescription: ")
+    assert TEXT.startswith("---\nname: linshare\ndescription: ")
 
 
 @pytest.mark.parametrize("needle", ["--dry-run", "linshare login", "explicit", "--json", "Never ask for or type their password"])

@@ -1,0 +1,12 @@
+{
+  "name": "linshare",
+  "description": "Share documents through LinShare from your AI assistant: send files by email, follow and revoke shares, receive files, ask people to send files, and work with team workgroups. Always shows what will happen and waits for your yes.",
+  "version": "0.2.0",
+  "author": {
+    "name": "Walid Boudiche"
+  },
+  "homepage": "https://github.com/wboudiche/linshare-skill",
+  "repository": "https://github.com/wboudiche/linshare-skill",
+  "license": "AGPL-3.0",
+  "keywords": ["linshare", "file-sharing", "share", "workgroup", "cli"]
+}

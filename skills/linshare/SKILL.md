@@ -1,24 +1,26 @@
 ---
-name: cli-anything-linshare
+name: linshare
 description: Share documents through LinShare - send files to people by email (inside or outside the organisation), list or revoke what was shared, list and download files received, ask people to send files, and work with team workgroups and workspaces (browse, upload, download, manage members). Use when the user asks to share, send, transfer or receive a file "via LinShare", to check or cancel a LinShare share, or about a LinShare workgroup, workspace or shared space.
 ---
 
-# cli-anything-linshare
+# LinShare
 
 `linshare` is a command-line tool for a LinShare server (version 6.5 or later).
 Use it to share the user's documents safely.
 
-## Installation
+## First, check the setup
 
-This skill drives the `linshare` command, which is installed separately
-(from the linshare-cli repository):
+Before the first LinShare command of a conversation, run `linshare --json whoami`:
 
-```bash
-pip install "git+<linshare-cli repository URL>#subdirectory=agent-harness"   # or: pip install -e agent-harness
-```
-
-Requires Python 3.10+ and a LinShare account on a 6.5+ server.
-If `linshare` is not found, tell the user to install it; don't install it yourself.
+- **command not found** (exit 127): the `linshare` command is not installed. Tell the user,
+  in plain words, that this skill needs it and that they can install it themselves with
+  `pip install "git+<linshare-cli repository URL>#subdirectory=agent-harness"` (Python 3.10+).
+  Don't install it yourself.
+- **exit 2** (`"code": "auth"`): not logged in. Ask the user to type, in this chat,
+  `! linshare login --server <address of their LinShare>` (ask for the address if you
+  don't know it) — they type their password there, never in the conversation.
+  With SSO: `! linshare login --token --server <address>`, pasting a token from the web UI.
+- **exit 0**: it shows the server and the account; go on with the request.
 
 ## Rules — follow them every time
 
