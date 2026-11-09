@@ -6,7 +6,7 @@ revoke shares, download received files, and ask people to send files. The assist
 shows a dry-run summary and waits for an explicit "yes" before anything is sent,
 revoked, deleted or closed.
 
-The skill drives the `linshare` command from the **linshare-cli** repository, which
+The skill drives the `linshare` command from the [linshare-cli](https://github.com/wboudiche/linshare-cli) repository, which
 must be installed first (Python 3.10+, LinShare 6.5 or later).
 
 ## Install
@@ -22,7 +22,7 @@ must be installed first (Python 3.10+, LinShare 6.5 or later).
 **2. The `linshare` command** (Python 3.10+):
 
 ```bash
-pip install "git+<linshare-cli repository URL>#subdirectory=agent-harness"
+pip install "git+https://github.com/wboudiche/linshare-cli#subdirectory=agent-harness"
 ```
 
 **3. Log in once**, by typing in Claude (your password goes to your terminal, never to the chat):

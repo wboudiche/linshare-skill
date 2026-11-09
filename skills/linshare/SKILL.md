@@ -14,7 +14,7 @@ Before the first LinShare command of a conversation, run `linshare --json whoami
 
 - **command not found** (exit 127): the `linshare` command is not installed. Tell the user,
   in plain words, that this skill needs it and that they can install it themselves with
-  `pip install "git+<linshare-cli repository URL>#subdirectory=agent-harness"` (Python 3.10+).
+  `pip install "git+https://github.com/wboudiche/linshare-cli#subdirectory=agent-harness"` (Python 3.10+).
   Don't install it yourself.
 - **exit 2** (`"code": "auth"`): not logged in. Ask the user to type, in this chat,
   `! linshare login --server <address of their LinShare>` (ask for the address if you
