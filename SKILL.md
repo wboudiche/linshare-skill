@@ -10,11 +10,15 @@ Use it to share the user's documents safely.
 
 ## Installation
 
+This skill drives the `linshare` command, which is installed separately
+(from the linshare-cli repository):
+
 ```bash
 pip install "git+<linshare-cli repository URL>#subdirectory=agent-harness"   # or: pip install -e agent-harness
 ```
 
 Requires Python 3.10+ and a LinShare account on a 6.5+ server.
+If `linshare` is not found, tell the user to install it; don't install it yourself.
 
 ## Rules — follow them every time
 
