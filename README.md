@@ -11,6 +11,24 @@ must be installed first (Python 3.10+, LinShare 6.5 or later).
 
 ## Install
 
+### The quick way: ask your assistant
+
+Paste this prompt into Claude Code (or another assistant that can run commands). It
+installs the `linshare` command and the skill, then tells you how to log in:
+
+```text
+Install the LinShare skill for me, from https://github.com/wboudiche/linshare-skill:
+1. Install the `linshare` command (Python 3.10+): `pipx install "git+https://github.com/wboudiche/linshare-cli#subdirectory=agent-harness"`. Without pipx: create a virtual environment in ~/.local/share/linshare-cli, install it there, link its `linshare` into ~/.local/bin, and tell me if ~/.local/bin is not on my PATH. Check that `linshare --help` works.
+2. Install the skill. If the `claude` command exists (Claude Code): run `claude plugin marketplace add wboudiche/linshare-skill` then `claude plugin install linshare@linshare-skill`, and check with `claude plugin list`. Otherwise: copy the `skills/linshare` folder of that repository into your skills folder.
+3. Do not log me in. Tell me to type `! linshare login --server <my LinShare address>` myself (my password goes to my terminal, not to the chat), and ask me for the address if I have not given it.
+```
+
+The assistant shows each command before running it, depending on your permission
+settings. It never logs in for you: you type the login line yourself, so your password
+stays in your terminal. If Claude Code does not see the skill right away, restart it.
+
+### Step by step
+
 **1. The skill, in Claude Code** — type in Claude:
 
 ```
