@@ -19,7 +19,7 @@ installs the `linshare` command and the skill, then tells you how to log in:
 ```text
 Install the LinShare skill for me, from https://github.com/wboudiche/linshare-skill:
 1. Install the `linshare` command (Python 3.10+): `pipx install "git+https://github.com/wboudiche/linshare-cli#subdirectory=agent-harness"`. Without pipx: create a virtual environment in ~/.local/share/linshare-cli, install it there, link its `linshare` into ~/.local/bin, and tell me if ~/.local/bin is not on my PATH. Check that `linshare --help` works.
-2. Install the skill. If the `claude` command exists (Claude Code): run `claude plugin marketplace add wboudiche/linshare-skill` then `claude plugin install linshare@linshare-skill`, and check with `claude plugin list`. Otherwise: copy the `skills/linshare` folder of that repository into your skills folder.
+2. Install the skill. If the `claude` command exists (Claude Code): run `claude plugin marketplace add wboudiche/linshare-skill` then `claude plugin install linshare@linshare-skill`, and check with `claude plugin list`. Otherwise: copy the `skills/linshare` folder of that repository into your personal skills folder (see "Other assistants" in its README).
 3. Do not log me in. Tell me to type `! linshare login --server <my LinShare address>` myself (my password goes to my terminal, not to the chat), and ask me for the address if I have not given it.
 ```
 
@@ -52,7 +52,35 @@ pip install "git+https://github.com/wboudiche/linshare-cli#subdirectory=agent-ha
 You don't need to remember steps 2 and 3: on the first request, the assistant checks
 and tells you what is missing.
 
-Other agents that read `SKILL.md` skills: copy `skills/linshare/` into their skills folder.
+### Other assistants
+
+The skill is a plain `SKILL.md` folder ([Agent Skills](https://agentskills.io) format), so
+any assistant that reads skills and can run commands can use it. Install the `linshare`
+command (step 2 above), then copy the skill folder where your assistant looks for it:
+
+```bash
+git clone --depth 1 https://github.com/wboudiche/linshare-skill /tmp/linshare-skill
+mkdir -p <skills folder> && cp -r /tmp/linshare-skill/skills/linshare <skills folder>/
+```
+
+| Assistant | Personal skills folder | Per project |
+|---|---|---|
+| [OpenAI Codex CLI](https://developers.openai.com/codex/skills) | `~/.agents/skills/` (older versions: `~/.codex/skills/`) | `.agents/skills/` |
+| [Gemini CLI](https://geminicli.com/docs/cli/skills/) | `~/.gemini/skills/` or `~/.agents/skills/` | `.gemini/skills/` |
+| [GitHub Copilot](https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-skills) (CLI, VS Code agent mode) | `~/.copilot/skills/` | `.github/skills/` |
+| [Cursor](https://cursor.com/docs/skills) | `~/.cursor/skills/` | `.cursor/skills/` |
+| [OpenCode](https://opencode.ai/docs/skills) | `~/.config/opencode/skills/` | `.opencode/skills/` |
+
+Many of them also read `~/.agents/skills/` or `~/.claude/skills/`, so one copy there
+often serves several assistants. Restart the assistant after copying. The prompt in
+"The quick way" should also work with them (it falls back to copying the folder).
+
+Then log in once in a terminal: `linshare login --server https://linshare.example.com`.
+
+The dry run and the "yes" before anything is sent come from the skill's instructions, so
+they depend on the assistant following them. This was checked with Claude Code only (on
+LinShare 6.5 and 7.0); the other assistants read the same format but have not been tested
+with this skill yet. Folders as documented in November 2026.
 
 ## What you can ask
 
