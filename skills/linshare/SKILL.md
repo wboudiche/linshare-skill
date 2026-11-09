@@ -83,6 +83,8 @@ Before the first LinShare command of a conversation, run `linshare --json whoami
    On LinShare 7.0 some things fail because of server bugs: `spaces members` cannot list members
    (use the member id printed by `add-member` for `set-role` / `remove-member`), and people cannot
    be added to a *workspace* (only to its workgroups). Relay the message; don't retry in other ways.
+   After `add-member`, tell the user the member id so they can keep it. If you don't have it,
+   ask the user for it: don't search their files or other folders for it.
 8. **On errors** relay `error.message` in plain words. Don't retry a refused share with
    different settings without asking. Exit 1 means the command itself was wrong (fix it,
    don't ask the user to log in). When a share fails the tool removes the uploaded files and
