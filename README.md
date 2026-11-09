@@ -23,19 +23,73 @@ ln -s ~/linshare-skill ~/.claude/skills/cli-anything-linshare
 Then the user logs in once, themselves: `linshare login --server https://linshare.example.com`.
 The assistant never asks for or types the password.
 
-## Use
+## What you can ask
 
-Ask in plain words, for example:
+Ask in plain words, in any language. ✋ marks the actions the assistant always
+confirms with you first.
 
-- "Share contract.pdf with marc@acme.com via LinShare for a week"
-- "Has Marc downloaded it?"
-- "Ask ann@acme.com to send me the scans via LinShare"
-- "Cancel what I shared with Marc"
+### Send files
 
-Before sharing, asking for files, revoking, deleting or closing, the assistant
-shows what will happen (files, recipients — flagging those outside your
-organisation — expiry, message, download alert) and waits for your "yes".
-It only uses a subject or message you gave it.
+| You say | What happens |
+|---|---|
+| "Share contract.pdf with marc@acme.com via LinShare" | ✋ uploads the file and shares it by email; the server's default expiry applies |
+| "Send report.pdf and annex.xlsx to marc@acme.com and julie@acme.com, for 2 weeks" | ✋ several files, several recipients, expiry in 14 days |
+| "Share the contract with Marc until December 15, subject *Contract*, message *Please sign before Friday*" | ✋ exact expiry date, your subject and message (it never writes one for you) |
+| "Share budget.xlsx with partner@other.org with a password-protected link" | ✋ recipients outside your organisation are flagged; they get a password-protected link |
+| "Share it with Marc and warn me if he hasn't downloaded it by Friday" | ✋ LinShare emails you on that day if the share is still not downloaded |
+| "Share it with Marc, no reminder" | ✋ turns that alert off (if your administrator allows it) |
+| "Share it with Marc and send me a copy of the email" | ✋ you also receive the share notification |
+| "Share this 3 GB video with the team" | ✋ large files are fine: they are uploaded in chunks; the assistant warns you it takes a while |
+
+### Follow up
+
+| You say | What happens |
+|---|---|
+| "What have I shared on LinShare?" | lists your shares: file, recipient, expiry, number of downloads |
+| "Has Marc downloaded the contract?" | reads the download count on the server (LinShare also emails you at the first download) |
+| "Cancel what I shared with Marc" | ✋ lists the matching shares, then revokes them |
+| "Delete the old version of the report from LinShare" | ✋ lists your documents, then deletes the ones you confirm |
+
+### Receive files
+
+| You say | What happens |
+|---|---|
+| "What did people send me on LinShare?" | lists the files shared with you |
+| "Download the file Julie sent me into ~/Downloads" | saves it (never overwrites an existing file) |
+| "Ask ann@acme.com to send me the scans, message *Please upload the signed scans*" | ✋ creates a private upload request; LinShare emails Ann a link |
+| "Ask Ann and Bob for their invoices before the end of the month" | ✋ one private request per person, with that deadline; it asks you for the message if you gave none |
+| "Did Ann send the scans?" | lists your requests and how many files came in |
+| "Download what Ann sent" | saves the received files as a zip |
+| "Close the request to Ann" | ✋ closes it; nobody can upload any more |
+
+### Account
+
+| You say | What happens |
+|---|---|
+| "Connect me to LinShare" | tells you to type `! linshare login` yourself: you enter your password (and 2FA code) in your terminal, never in the chat |
+| "Which LinShare account am I using?" | shows the server, its version and your email |
+
+### What a confirmation looks like
+
+```
+You:    Share contract.pdf with marc@acme.com and paul@partner.org for a week,
+        message "Please sign".
+Agent:  Here is what will be sent:
+        - contract.pdf (240 KB)
+        - to marc@acme.com, and paul@partner.org — outside your organisation
+        - expires on 2026-11-16
+        - message: "Please sign"; no password-protected link
+        - download alert: on 2026-11-11 (server default: after 3 working days)
+        Shall I send it?
+You:    yes
+Agent:  Shared contract.pdf with marc@acme.com and paul@partner.org until 2026-11-16.
+```
+
+The assistant checks the dry run against the server first, so the summary shows
+what will really happen, including settings your administrator imposes. If you
+change anything (a recipient, the date, a file), it shows a new summary and asks
+again. Before telling you whether something was shared, revoked or closed, it
+checks the server rather than its memory.
 
 ## Test
 
@@ -48,7 +102,7 @@ pip install pytest
 pytest -q tests
 ```
 
-The tests are skipped if `linshare` is not installed.
+The checks against the command are skipped if `linshare` is not installed.
 
 ## Compatibility
 
