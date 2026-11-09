@@ -16,7 +16,7 @@ must be installed first (Python 3.10+, LinShare 6.5 or later).
 pip install "git+<linshare-cli repository URL>#subdirectory=agent-harness"
 
 # 2. the skill, for Claude Code
-git clone <linshare-skill repository URL> ~/linshare-skill
+git clone https://github.com/wboudiche/linshare-skill.git ~/linshare-skill
 ln -s ~/linshare-skill ~/.claude/skills/cli-anything-linshare
 ```
 
