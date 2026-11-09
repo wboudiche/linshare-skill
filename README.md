@@ -21,6 +21,21 @@ ln -s ~/linshare-skill ~/.claude/skills/cli-anything-linshare
 ```
 
 Then the user logs in once, themselves: `linshare login --server https://linshare.example.com`.
+The assistant never asks for or types the password.
+
+## Use
+
+Ask in plain words, for example:
+
+- "Share contract.pdf with marc@acme.com via LinShare for a week"
+- "Has Marc downloaded it?"
+- "Ask ann@acme.com to send me the scans via LinShare"
+- "Cancel what I shared with Marc"
+
+Before sharing, asking for files, revoking, deleting or closing, the assistant
+shows what will happen (files, recipients — flagging those outside your
+organisation — expiry, message, download alert) and waits for your "yes".
+It only uses a subject or message you gave it.
 
 ## Test
 
@@ -29,6 +44,7 @@ in the installed `linshare` (so the skill and the command don't drift apart), an
 the safety rules are still there:
 
 ```bash
+pip install pytest
 pytest -q tests
 ```
 
